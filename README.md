@@ -1,22 +1,14 @@
-# Hello, World! Docker Action
+# Initalize Workspace Action
 
-[![GitHub Super-Linter](https://github.com/actions/hello-world-docker-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/hello-world-docker-action/actions/workflows/ci.yml/badge.svg)
+[![GitHub Super-Linter](https://github.com/emergentdotorg/maven-release-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
+![CI](https://github.com/emergentdotorg/maven-release-action/actions/workflows/ci.yml/badge.svg)
 
-This action prints `Hello, World!` or `Hello, <who-to-greet>!` to the log. To
-learn how this action was built, see
+This action delivers resources to a GitHub action workspace
+To learn how this action was built, see
 [Creating a Docker container action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action).
 
 ## Create Your Own Action
 
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
-
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
 
 > [!CAUTION]
 >
@@ -34,43 +26,44 @@ name: Example Workflow
 on:
   workflow_dispatch:
     inputs:
-      who-to-greet:
-        description: Who to greet in the log
+      resources-dest:
+        description: Where to put resource files (relative to workspace root).
         required: true
-        default: 'World'
+        default: '.mvn/res'
         type: string
 
 jobs:
-  say-hello:
-    name: Say Hello
+  deliver-resources:
+    name: Deliver Resources
     runs-on: ubuntu-latest
 
     steps:
       # Change @main to a specific commit SHA or version tag, e.g.:
       # actions/hello-world-docker-action@e76147da8e5c81eaf017dede5645551d4b94427b
       # actions/hello-world-docker-action@v1.2.3
-      - name: Print to Log
-        id: print-to-log
-        uses: actions/hello-world-docker-action@main
+      - name: Deliver Resources
+        id: deliver_resources
+        uses: emergentdotorg/maven-release-action@main
         with:
-          who-to-greet: ${{ inputs.who-to-greet }}
+          resources-dest: ${{ inputs.resources-dest }}
 ```
 
 For example workflow runs, check out the
-[Actions tab](https://github.com/actions/hello-world-docker-action/actions)!
+[Actions tab](https://github.com/emergentdotorg/maven-release-action/actions)!
 :rocket:
 
 ## Inputs
 
-| Input          | Default | Description                     |
-| -------------- | ------- | ------------------------------- |
-| `who-to-greet` | `World` | The name of the person to greet |
+| Input            | Default    | Description                                          |
+|------------------|------------|------------------------------------------------------|
+| `resources-dest` | `.mvn/res` | The path to where resource files should be delivered |
 
 ## Outputs
 
-| Output | Description             |
-| ------ | ----------------------- |
-| `time` | The time we greeted you |
+| Output                | Description                         |
+|-----------------------|-------------------------------------|
+| `time`                | The time we greeted you             |
+| `maven_user_settings` | Path to the maven settings.xml file |
 
 ## Test Locally
 
@@ -85,11 +78,11 @@ need to perform some initial setup steps before you can test your action.
 
 1. :hammer_and_wrench: Build the container
 
-   Make sure to replace `actions/hello-world-docker-action` with an appropriate
+   Make sure to replace `emergentdotorg/maven-release-action` with an appropriate
    label for your container.
 
    ```bash
-   docker build -t actions/hello-world-docker-action .
+   docker build -t emergentdotorg/maven-release-action .
    ```
 
 1. :white_check_mark: Test the container
@@ -97,15 +90,15 @@ need to perform some initial setup steps before you can test your action.
    You can pass individual environment variables using the `--env` or `-e` flag.
 
    ```bash
-   $ docker run --env INPUT_WHO_TO_GREET="Mona Lisa Octocat" actions/hello-world-docker-action
+   $ docker run --env INPUT_RESOURCES_DEST="foo" emergentdotorg/maven-release-action
    ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
    ```
 
    Or you can pass a file with environment variables using `--env-file`.
 
    ```bash
-   $ echo "INPUT_WHO_TO_GREET=\"Mona Lisa Octocat\"" > ./.env.test
+   $ echo "INPUT_RESOURCES_DEST=\"foo\"" > ./.env.test
 
-   $ docker run --env-file ./.env.test actions/hello-world-docker-action
+   $ docker run --env-file ./.env.test emergentdotorg/maven-release-action
    ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
    ```
