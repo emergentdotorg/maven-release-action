@@ -13,4 +13,4 @@ COPY src/* ${SRC_DIR}/
 WORKDIR ${SRC_DIR}
 
 # Configure the container to be run as an executable
-ENTRYPOINT ["${SRC_DIR}/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/entrypoint.sh"]
